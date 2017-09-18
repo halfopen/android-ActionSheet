@@ -105,3 +105,6 @@ You can custom style, can refer to ActionSheetStyleiOS6/ActionSheetStyleiOS7 wri
 * `actionSheetTextSize`
 
 
+> 对原有库进行了修改，当items超过屏幕高度时能够滚动
+
+

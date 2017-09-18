@@ -253,8 +253,25 @@ public class ActionSheet extends Fragment implements View.OnClickListener {
 
     private void createItems() {
         String[] titles = getOtherButtonTitles();
+
+        RelativeLayout relativeLayout = new RelativeLayout(getActivity());
+        RelativeLayout.LayoutParams rll = new RelativeLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
+        relativeLayout.setLayoutParams(rll);
+
+        ScrollView scrollView = new ScrollView(getActivity());
+        RelativeLayout.LayoutParams ll = new RelativeLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+        ll.addRule(RelativeLayout.ABOVE,ActionSheet.CANCEL_BUTTON_ID);
+        ll.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        scrollView.setLayoutParams(ll);
+        scrollView.setPadding(0,0,0,200);
+
+        LinearLayout linearLayout = new LinearLayout(getActivity());
+        LinearLayout.LayoutParams ll2 = new LinearLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        linearLayout.setLayoutParams(ll2);
+
         if (titles != null) {
-            for (int i = 0; i < titles.length; i++) {
+            for (int i = 0; i< titles.length; i++) {
                 Button bt = new Button(getActivity());
                 bt.setId(CANCEL_BUTTON_ID + i + 1);
                 bt.setOnClickListener(this);
@@ -262,15 +279,19 @@ public class ActionSheet extends Fragment implements View.OnClickListener {
                 bt.setText(titles[i]);
                 bt.setTextColor(mAttrs.otherButtonTextColor);
                 bt.setTextSize(TypedValue.COMPLEX_UNIT_PX, mAttrs.actionSheetTextSize);
-                if (i > 0) {
+                if (i < 0) {
                     LinearLayout.LayoutParams params = createButtonLayoutParams();
                     params.topMargin = mAttrs.otherButtonSpacing;
-                    mPanel.addView(bt, params);
+                    linearLayout.addView(bt, params);
                 } else {
-                    mPanel.addView(bt);
+                    linearLayout.addView(bt);
                 }
             }
         }
+
+        scrollView.addView(linearLayout);
+        relativeLayout.addView(scrollView);
+
         Button bt = new Button(getActivity());
         bt.getPaint().setFakeBoldText(true);
         bt.setTextSize(TypedValue.COMPLEX_UNIT_PX, mAttrs.actionSheetTextSize);
@@ -279,13 +300,17 @@ public class ActionSheet extends Fragment implements View.OnClickListener {
         bt.setText(getCancelButtonTitle());
         bt.setTextColor(mAttrs.cancelButtonTextColor);
         bt.setOnClickListener(this);
-        LinearLayout.LayoutParams params = createButtonLayoutParams();
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
         params.topMargin = mAttrs.cancelButtonMarginTop;
-        mPanel.addView(bt, params);
+        params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        bt.setLayoutParams(params);
+
+        relativeLayout.addView(bt);
+
+        mPanel.addView(relativeLayout);
 
         mPanel.setBackgroundDrawable(mAttrs.background);
-        mPanel.setPadding(mAttrs.padding, mAttrs.padding, mAttrs.padding,
-                mAttrs.padding);
+        mPanel.setPadding(mAttrs.padding, mAttrs.padding, mAttrs.padding, mAttrs.padding);
     }
 
     public LinearLayout.LayoutParams createButtonLayoutParams() {
